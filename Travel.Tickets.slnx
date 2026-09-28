@@ -1,3 +1,181 @@
-<Solution>
-  <Project Path="Travel.Tickets/Travel.Tickets.csproj" />
-</Solution>
+namespace Travel.Tickets
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+
+            cmbFrom.Items.Add("Bakı");
+            cmbFrom.Items.Add("Gəncə");
+            cmbFrom.Items.Add("Sumqayıt");
+            cmbFrom.Items.Add("Şəki");
+            cmbFrom.Items.Add("Qəbələ");
+
+            cmbTo.Items.Add("Bakı");
+            cmbTo.Items.Add("Gəncə");
+            cmbTo.Items.Add("Sumqayıt");
+            cmbTo.Items.Add("Şəki");
+            cmbTo.Items.Add("Qəbələ");
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSwap_Click(object sender, EventArgs e)
+        {
+            string temp = cmbFrom.Text;
+
+            cmbFrom.Text = cmbTo.Text;
+            cmbTo.Text = temp;
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            DialogResult d = MessageBox.Show(
+                "Proqramdan çıxış edilsinmi?",
+                "Bildiriş",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (d == DialogResult.Yes)
+            {
+                Close();
+            }
+        }
+
+        private void btnBuy_Click(object sender, EventArgs e)
+        {
+            string from = cmbFrom.Text;
+            string to = cmbTo.Text;
+            string date = mtxtDate.Text;
+            string time = mtxtTime.Text;
+            string fullName = txtFullName.Text;
+            string fin = txtFIN.Text;
+            string phone = mtxtPhone.Text;
+            string email = txtEmail.Text;
+            string place = txtPlace.Text;
+
+            if (from == "" || to == "" || date == "" || time == "" ||
+                fullName == "" || fin == "" || phone == "" || email == "" || place == "")
+            {
+                MessageBox.Show(
+                    "Zəhmət olmasa bütün məlumatları doldurun.",
+                    "Xəta",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            if (from == to)
+            {
+                MessageBox.Show(
+                    "Haradan və Haraya şəhərləri eyni ola bilməz.",
+                    "Xəta",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            DateTime travelDate;
+
+            if (!DateTime.TryParseExact(
+                    mtxtDate.Text,
+                    "dd/MM/yyyy",
+                    null,
+                    System.Globalization.DateTimeStyles.None,
+                    out travelDate))
+            {
+                MessageBox.Show(
+                    "Tarixi düzgün daxil edin. Məsələn: 28/09/2026",
+                    "Xəta",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            if (travelDate.Date < DateTime.Today)
+            {
+                MessageBox.Show(
+                    "Keçmiş tarixə bilet almaq mümkün deyil.",
+                    "Xəta",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            TimeSpan travelTime;
+
+            if (!TimeSpan.TryParseExact(
+                    mtxtTime.Text,
+                    @"hh\:mm",
+                    null,
+                    out travelTime) ||
+                travelTime.TotalHours >= 24)
+            {
+                MessageBox.Show(
+                    "Saatı düzgün daxil edin. Məsələn: 14:30",
+                    "Xəta",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            string ticket =
+    "✈ " + from + " → " + to +
+    " | " + date +
+    " | " + time +
+    " | " + fullName +
+    " | Yer: " + place;
+
+            lstTickets.Items.Add(ticket);
+
+            MessageBox.Show(
+
+                "Bilet uğurla alındı!",
+                "Bildiriş",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+                );
+            // Xanaları təmizlə
+             cmbFrom.SelectedIndex = -1;
+             cmbTo.SelectedIndex = -1;
+             mtxtDate.Clear();
+             mtxtTime.Clear();
+             txtFullName.Clear();
+             txtFIN.Clear();
+             mtxtPhone.Clear();
+             txtEmail.Clear();
+             txtPlace.Clear();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (lstTickets.SelectedIndex != -1)
+            {
+                lstTickets.Items.RemoveAt(lstTickets.SelectedIndex);
+
+                MessageBox.Show(
+                    "Bilet silindi.",
+                    "Bildiriş",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(
+                    "Zəhmət olmasa silmək üçün bilet seçin.",
+                    "Xəta",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+        }
+    }
+}
